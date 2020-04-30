@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <script src="crawler.js"></script>
+    <script>
+      callback = function (window, comment, path, sizeInLines, cursor, repoId, sourceId, commentLine, error) {
+        console.log()
+        console.log()
+        console.log(window, comment, path, sizeInLines, cursor, repoId, sourceId, commentLine, error)
+      }
+      nextComment(
+        {
+          "url": "https://api.github.com/repos/torvalds/linux/contents/",
+          "exclusivePath": "kernel/",
+          "continuePos": "kernel/bpf/bpf_lru_list.c:40"
+          // "continuePos": ""
+        },
+        callback  
+      )
+    </script>
+  </head>
+</html>
