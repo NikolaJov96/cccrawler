@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <meta charset="utf-8"/>
     <script src="crawler.js"></script>
+    <script src="front.js"></script>
     <script>
       callback = function (window, comment, path, sizeInLines, cursor, repoId, sourceId, commentLine, error) {
         console.log()
@@ -16,8 +18,46 @@
           "continuePos": "kernel/bpf/bpf_lru_list.c:40"
           // "continuePos": ""
         },
-        callback  
+        callback
       )
     </script>
   </head>
+
+  <body>
+    <div>
+      <button onclick="myFunction()">Start</button>
+      <input type="text" placeholder="Path to file..."/>
+    </div>
+
+    <hr/>
+
+    <div>
+      <textarea rows="17" readonly style="resize: none; width: 100%;"></textarea>
+    </div>
+
+    <hr/>
+
+    <div>
+      <select aria-label="Class">
+        <option value="Functional-Inline">Functional-Inline</option>
+        <option value="Functional-Method">Functional-Method</option>
+        <option value="Functional-Module">Functional-Module</option>
+        <option value="ToDo">ToDo</option>
+        <option value="Notice">Notice</option>
+        <option value="General">General</option>
+        <option value="Code">Code</option>
+        <option value="IDE">IDE</option>
+      </select>
+      <button onclick="myFunction()">Next comment</button>
+      <button onclick="myFunction()">Skip comment</button>
+      <button onclick="myFunction()">Save to file</button>
+    </div>
+
+    <hr/>
+
+    <div>
+      <textarea readonly style="resize: none; height: 100%; width: 100%;"></textarea>
+    </div>
+  </body>
+
 </html>
