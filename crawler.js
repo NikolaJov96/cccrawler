@@ -10,7 +10,7 @@ Dir: {
 }
 */
 
-// Regex for parsing the string describing the position in the specific file 
+// Regex for parsing the string describing the position in the specific file
 var filePosReg = /^(.+)\/([^/]+\.c)\:([0-9]+)$/g;
 // Target number of lines to give context to the comment
 var targetWindowLines = 15;
@@ -49,7 +49,7 @@ getGitHubReq = function (url, callback) {
   if (debug) console.log("url", url);
 
   xmlHttp = new XMLHttpRequest();
-  xmlHttp.onreadystatechange = function () { 
+  xmlHttp.onreadystatechange = function () {
     if (xmlHttp.readyState == 4 && xmlHttp.status == 200) callback(JSON.parse(xmlHttp.responseText));
   }
   xmlHttp.open("GET", url, true);
@@ -132,7 +132,7 @@ cursorStep = function () {
 
 // Look for comments inside the currently opened file and request the new one to be opened when current one is done
 findNextComment = function (mainCallback) {
-  
+
   if (debug) console.log();
   if (debug) console.log("findNextComment called");
 
@@ -148,7 +148,7 @@ findNextComment = function (mainCallback) {
     // go through the file and try to find next comment
     // if there are none find next file
       // find next comment
-      
+
     // Parser states: "init"|"line"|"block"
     parserState = "init";
 
@@ -186,19 +186,19 @@ findNextComment = function (mainCallback) {
       // Call the main callback and report the found comment
       mainCallback(
         contextWindow,
-        fle.content.substring(commentStart, fle.cursor), 
-        fle.path, 
-        fle.sizeInLines, 
+        fle.content.substring(commentStart, fle.cursor),
+        fle.path,
+        fle.sizeInLines,
         fle.cursor,
-        repoId, 
-        fle.sourceId, 
-        commentLine,  
+        repoId,
+        fle.sourceId,
+        commentLine,
         "");
     }
   }
 }
 
-// Start from the deepest opened dir and find the next C file 
+// Start from the deepest opened dir and find the next C file
 findNextFile = function (mainCallback, continueInfo) {
 
   if (debug) console.log();
@@ -218,7 +218,7 @@ findNextFile = function (mainCallback, continueInfo) {
     currDir.selectedType = "dir";
     currDir.selectedId = -1;
   }
-  
+
   if (currDir.selectedType === "dir") {
     currDir.selectedId += 1;
     if (currDir.selectedId >= currDir.subDirs.length) {
@@ -229,13 +229,13 @@ findNextFile = function (mainCallback, continueInfo) {
       // Open the next sub-dir (check if it is on the continue path)
       if (continueInfo === null || (continueInfo[1] + "/").startsWith(currDir.subDirs[currDir.selectedId] + "/")) {
         getGitHubDir(repoUrl + currDir.subDirs[currDir.selectedId], currDir.subDirs[currDir.selectedId], (dir) => {
-        
+
           if (debug) console.log();
           if (debug) console.log("getGitHubDir callback called");
           if (debug) console.log("dir", dir);
-    
+
           currDir.currSubDir = dir;
-    
+
           findNextFile(mainCallback, continueInfo);
         })
       } else {
@@ -244,7 +244,7 @@ findNextFile = function (mainCallback, continueInfo) {
         findNextFile(mainCallback, continueInfo)
       }
     }
-  } 
+  }
 
   if (currDir.selectedType === "file"){
     currDir.selectedId += 1;
@@ -348,7 +348,7 @@ nextComment = function (initState, mainCallback) {
         // find next comment
 
     getGitHubDir(repoUrl + initState.exclusivePath, initState.exclusivePath, (dir) => {
-      
+
       if (debug) console.log();
       if (debug) console.log("getGitHubDir callback called");
       if (debug) console.log("dir", dir);
