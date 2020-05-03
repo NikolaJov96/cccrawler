@@ -1,3 +1,8 @@
+// Prevent accidental refresh
+window.onbeforeunload = function() {
+    return "Are you sure you want to reload?"
+}
+
 // Dump comment (along with context) to page
 function dumpComment(window, comment, path, sizeInLines, cursor, repoId, sourceId, commentLine, error) {
     console.log()
@@ -5,6 +10,7 @@ function dumpComment(window, comment, path, sizeInLines, cursor, repoId, sourceI
     document.getElementById("contextArea").value = window
 }
 
+// Start button action
 function startFromNewPosition() {
     var repoURL = document.getElementById("inRepoURL").value
     if (repoURL === "") {
@@ -34,14 +40,17 @@ function startFromNewPosition() {
         },
 */
 
+// Next comment button action
 function processCommentAndContinue() {
     nextComment(null, dumpComment)
 }
 
+// Skip comment button action
 function skipCommentAndContinue() {
     nextComment(null, dumpComment)
 }
 
+// Save to file button action
 function doNothing() {
     console.log("Not yet implemented")
 }
