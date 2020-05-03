@@ -11,6 +11,8 @@ Dir: {
 */
 
 // Regex for parsing the string describing the position in the specific file
+var correctUrlReg = /^(https\:\/\/api\.github\.com\/repos\/).+\/.+(\/contents\/)$/g;
+// Regex for parsing the string describing the position in the specific file
 var filePosReg = /^(.+)\/([^/]+\.c)\:([0-9]+)$/g;
 // Target number of lines to give context to the comment
 var targetWindowLines = 15;
@@ -329,6 +331,10 @@ nextComment = function (initState, mainCallback) {
   if (initState !== null) {
     // initState is not null, so reinitialize the whole crawler
 
+    if (!initState.url.match(correctUrlReg)) {
+      mainCallback("", "", "", 0, 0, "Invalid GitHub API URL, template: https://api.github.com/repos/<username>/<repo>/contents/")
+      return
+    }
     repoUrl = initState.url;
     repoId = hashCode(repoUrl);
     continueInfo = null
