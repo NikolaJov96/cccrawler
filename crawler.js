@@ -11,8 +11,6 @@ Dir: {
 */
 
 // Regex for parsing the string describing the position in the specific file
-var correctUrlReg = /^(https\:\/\/api\.github\.com\/repos\/).+\/.+(\/contents\/)$/g;
-// Regex for parsing the string describing the position in the specific file
 var filePosReg = /^(.+)\/([^/]+\.c)\:([0-9]+)$/g;
 // Target number of lines to give context to the comment
 var targetWindowLines = 15;
@@ -106,7 +104,8 @@ getGitHubFile = function (url, callback) {
     if (debug) console.log("res", res);
 
     // Decode base64 encoded C file content and add one new line to help out the parser
-    callback(atob(JSON.parse(xmlHttp.responseText).content) + '\n');
+    // Also return HTML URL to the file on GitHub
+    callback(atob(res.content) + '\n', res.html_url);
   })
 }
 
@@ -139,11 +138,11 @@ findNextComment = function (mainCallback) {
   if (debug) console.log("findNextComment called");
 
   // Check for different unexpected errors
-  if (repoUrl.length === 0) mainCallback("", "", "", 0, 0, "Repo URL not provided")
-  else if (dirStack === null) mainCallback("", "", "", 0, 0, "Directory stack not initialized")
-  else if (dirStack.length === 0) mainCallback("", "", "", 0, 0, "Directory stack empty")
-  else if (fle === null) mainCallback("", "", "", 0, 0, "File object not initialized")
-  else if (fle.content.length === 0) mainCallback("", "", "", 0, 0, "File content found empty")
+  if (repoUrl.length === 0) mainCallback("", "", "", 0, 0, "", "", 0, "", "Repo URL not provided")
+  else if (dirStack === null) mainCallback("", "", "", 0, 0, "", "", 0, "", "Directory stack not initialized")
+  else if (dirStack.length === 0) mainCallback("", "", "", 0, 0, "", "", 0, "", "Directory stack empty")
+  else if (fle === null) mainCallback("", "", "", 0, 0, "", "", 0, "", "File object not initialized")
+  else if (fle.content.length === 0) mainCallback("", "", "", 0, 0, "", "", 0, "", "File content found empty")
   else {
 
     // General pipeline:
@@ -195,6 +194,7 @@ findNextComment = function (mainCallback) {
         repoId,
         fle.sourceId,
         commentLine,
+        fle.html_url,
         "");
     }
   }
@@ -257,8 +257,8 @@ findNextFile = function (mainCallback, continueInfo) {
       if (dirStack.currSubDir === null) {
         // Trying to return from the root dir, all files in requested exclusive path are analyzed
         if (debug) console.log("whole search domain exhausted")
-        if (continueInfo === null) mainCallback("", "", "", 0, 0, "All comments in the requested exclusive path are analyzed")
-        else mainCallback("", "", "", 0, 0, "Requested continue position not found")
+        if (continueInfo === null) mainCallback("", "", "", 0, 0, "", "", 0, "", "All comments in the requested exclusive path are analyzed")
+        else mainCallback("", "", "", 0, 0, "", "", 0, "", "Requested continue position not found")
       } else {
         // Pop the current dir and recursively findNextFile in it's parent
         while (delDir.currSubDir.currSubDir !== null) delDir = delDir.currSubDir
@@ -272,7 +272,7 @@ findNextFile = function (mainCallback, continueInfo) {
           currDir.cFiles[currDir.selectedId] === continueInfo[2] || currDir.cFiles[currDir.selectedId].endsWith("/" + continueInfo[2])
         )
       )) {
-        getGitHubFile(repoUrl + currDir.cFiles[currDir.selectedId], (content) => {
+        getGitHubFile(repoUrl + currDir.cFiles[currDir.selectedId], (content, html_url) => {
 
           if (debug) console.log();
           if (debug) console.log("getGitHubFile callback called");
@@ -284,6 +284,7 @@ findNextFile = function (mainCallback, continueInfo) {
             "sourceId": hashCode(currDir.cFiles[currDir.selectedId]),
             "content": content,
             "sizeInLines": (content.split(/[\n]/g) || []).length,
+            "html_url": html_url,
             "windowStart": 0,
             "windowStartLine": 1,
             "windowEnd": 0,
@@ -330,12 +331,11 @@ nextComment = function (initState, mainCallback) {
 
   if (initState !== null) {
     // initState is not null, so reinitialize the whole crawler
-
-    if (!initState.url.match(correctUrlReg)) {
-      mainCallback("", "", "", 0, 0, "Invalid GitHub API URL, template: https://api.github.com/repos/<username>/<repo>/contents/")
+    if (initState.repoAuthor.length === 0 || initState.repoName.length === 0) {
+      mainCallback("", "", "", 0, 0, "", "", 0, "", "Invalid GitHub repo parameters")
       return
     }
-    repoUrl = initState.url;
+    repoUrl = "https://api.github.com/repos/" + initState.repoAuthor + "/" + initState.repoName + "/contents/";
     repoId = hashCode(repoUrl);
     continueInfo = null
     if (initState.continuePos.length > 0) {
@@ -343,7 +343,7 @@ nextComment = function (initState, mainCallback) {
       if (debug) console.log("Parsed continue position", continueInfo)
       if (continueInfo.length !== 4) {
         // Invalid input
-        mainCallback("", "", "", 0, 0, "Invalid continue position string")
+        mainCallback("", "", "", 0, 0, "", "", 0, "", "Invalid continue position string")
         return
       }
     }
