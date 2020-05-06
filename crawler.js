@@ -244,6 +244,7 @@ findNextFile = function (mainCallback, continueInfo) {
         // Continue dir provided, but not matched this time, try with the next sub-dir
         if (debug) console.log("Unsatisfactory continue sub-dir", currDir.subDirs[currDir.selectedId])
         findNextFile(mainCallback, continueInfo)
+        return
       }
     }
   }

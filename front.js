@@ -113,7 +113,7 @@ function processCommentAndContinue() {
         "repoId": commentData.repoId,
         "sourceId": commentData.sourceId,
         "commentId": hashCode(commentData.repoId + commentData.sourceId + commentData.cursor.toString()),
-        "comment": commentData.comment.split("\n").join("/n"),
+        "comment": commentData.comment.split("\n").join("\\n"),
         "label": selectedLabel
     });
 
@@ -158,7 +158,7 @@ function copyTabComments() {
             elem.repoId + "\t" + 
             elem.sourceId + "\t" + 
             elem.commentId + "\t" + 
-            elem.comment + "\t" + 
+            elem.comment.split("\t").join("\\t") + "\t" + 
             elem.label + "\n"
     });
     textArea = document.getElementById("copyText");

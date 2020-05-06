@@ -28,10 +28,10 @@
         <input id="inRepoName" type="text" size="30" placeholder="Repository repo name" value="linux"/><br>
 
         <label for="inPathToDir">Path to directory</label>
-        <input id="inPathToDir" type="text" size="30" placeholder="e.g. kernel/" value="kernel/"/><br>
+        <input id="inPathToDir" type="text" size="30" placeholder="e.g. kernel" value="kernel"/><br>
 
         <label for="inPathToFile">Full path to file</label>
-        <input id="inPathToFile" type="text" size="30" placeholder="e.g. kernel/bpf/bpf_lru_list.c:40"/><br>
+        <input id="inPathToFile" type="text" size="30" placeholder="e.g. kernel/acct.c:0"/><br>
         
         <!-- Start button -->
         <button onclick="startFromNewPosition()">Start</button>
@@ -80,7 +80,7 @@
       <button onclick="copyTabComments();">Copy tab-separated comments</button><br>
       <button onclick="copyTabSources();">Copy tab-separated source ids</button><br>
       <button onclick="copyCommaComments();">Copy comma-separated comments</button><br>
-      <textarea id="copyText"></textarea>
+      <textarea id="copyText" readonly></textarea>
       <hr/>
       <p>Please keep the following path and provide it when you are back, to resume the labeling from where you left off:</p>
       <p id="resumePath"></p>
