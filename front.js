@@ -112,7 +112,7 @@ function processCommentAndContinue() {
         "progLang": progLang,
         "repoId": commentData.repoId,
         "sourceId": commentData.sourceId,
-        "commentId": hashCode(commentData.repoId + commentData.sourceId + commentData.cursor.toString()),
+        "commentId": commentData.repoId + "/" +  commentData.sourceId + "/" +  commentData.cursor.toString(),
         "comment": commentData.comment.split("\n").join("\\n"),
         "label": selectedLabel
     });
