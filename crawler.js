@@ -170,7 +170,7 @@ findNextComment = function (mainCallback) {
 
     if (parserState === 'init') {
       // No comment found, request new file
-      findNextFile(mainCallback, continueInfo);
+      findNextFile(mainCallback, null);
     } else {
 
       // Store the comment context window and the comment line number
