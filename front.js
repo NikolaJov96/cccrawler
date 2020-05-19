@@ -27,6 +27,27 @@ var oldResume = "";
 var natLangId = "EN";
 var progLang = "C";
 
+// maps key to comment type in the #labels select field
+var keyShortcutMap ={
+    i: "Functional-Inline",
+    m: "Functional-Method",
+    o: "Functional-Module",
+    t: "ToDo",
+    n: "Notice",
+    g: "General",
+    c: "Code",
+    d: "IDE"
+}
+
+document.addEventListener('keypress', (e)=>{
+    // select relevant comment type if e.key is in the shortcut map
+    labels=document.getElementById("labels");
+    if(keyShortcutMap[e.key])
+    {
+        labels.value=keyShortcutMap[e.key];
+    }
+});
+
 // Prevent accidental refresh
 window.onbeforeunload = function() {
     return "Are you sure you want to reload?";
